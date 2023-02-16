@@ -6,21 +6,36 @@ import GridCards from '../commons/GridCards';
 import {Row} from 'antd';
 
 function LandingPage() {
-  const [Movies, setMovies] = useState(null);
+  const [Movies, setMovies] = useState([]);
   const [MainMovieImage, setMainMovieImage] = useState(null);
+  const [page,setPage]=useState(1)
 
   useEffect(() => {
     const endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=1`;
 
+    fetchMovies(endpoint)
+  }, []);
+
+
+  const fetchMovies =(endpoint)=>{
+
     fetch(endpoint)
       .then((response) => response.json())
       .then((response) => {
-        setMovies(response.results);
+        setMovies([ ...Movies, ...response.results]);
         setMainMovieImage(response.results[0]);
+        
       });
-  }, []);
 
-  console.log('movies:',Movies);
+  }
+
+  console.log(Movies)
+  const LoadMoreItems=()=>{
+    const endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=${page+1}`;
+
+    fetchMovies(endpoint);
+
+  }
 
   return (
     <div style={{ width: "100%", margin: "0" }}>
@@ -56,7 +71,7 @@ function LandingPage() {
       </div>
 
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <button>Load More</button>
+        <button onClick={LoadMoreItems}>Load More</button>
       </div>
     </div>
   );

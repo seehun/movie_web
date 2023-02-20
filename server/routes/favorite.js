@@ -40,4 +40,18 @@ router.post("/addToFavorite", (req, res) => {
   });
 });
 
+router.post("/getFavoriteMoive", (req, res) => {
+  Favorite.find({ userFrom: req.body.userFrom }).exec((err, info) => {
+    if (err) return res.status(400).send(err);
+    return res.status(200).json({ success: true, info });
+  });
+});
+
+router.post("/removeFromFavorite", (req, res) => {
+  Favorite.findOneAndDelete({ movieId: req.body.movieId, userFrom: req.body.userFrom }).exec((err, result) => {
+    if (err) return res.status(400).send(err);
+    return res.status(200).json({ success: true });
+  });
+});
+
 module.exports = router;
